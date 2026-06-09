@@ -24,23 +24,168 @@
 
 body { 
     margin: 0; 
-    padding: 40px 0; 
+    padding: 0; /* Changed from 40px 0 to 0 to support the sticky header correctly */
     font-family: 'Plus Jakarta Sans', sans-serif; 
     background: var(--body-bg); 
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    gap: 40px;
 }
 
+/* Add a margin spacer below the header so content doesn't collide */
 #diary-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 40px;
     width: 100%;
+    padding: 40px 0;
 }
 
+/* ==========================================================================
+   APP HEADER & AUTH BAR (Sticky Login Banner)
+   ========================================================================== */
+.app-header {
+    width: 100%;
+    background: rgba(255, 251, 247, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1.5px solid rgba(109, 89, 122, 0.1);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.logo-emoji {
+    font-size: 16px;
+}
+.logo-text {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent-purple);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Sync Indicator */
+.sync-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+.sync-indicator.offline {
+    background: rgba(138, 155, 168, 0.1);
+    color: var(--muted-text);
+}
+.sync-indicator.syncing {
+    background: rgba(245, 158, 11, 0.1);
+    color: #D97706;
+    animation: headerSyncPulse 1.2s infinite alternate;
+}
+.sync-indicator.synced {
+    background: rgba(52, 168, 83, 0.1);
+    color: #2E7D32;
+}
+
+@keyframes headerSyncPulse {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* Auth Widget */
+.auth-widget {
+    display: flex;
+    align-items: center;
+}
+.btn-google {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 15px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--main-heading);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+.btn-google:hover {
+    background: #FDFBF7;
+    transform: translateY(-0.5px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+}
+.google-icon {
+    display: block;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.user-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent-purple);
+    object-fit: cover;
+}
+.user-display-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--main-heading);
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.btn-logout {
+    background: transparent;
+    border: 1px solid rgba(109, 89, 122, 0.3);
+    color: var(--accent-purple);
+    border-radius: 12px;
+    padding: 3px 8px;
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-logout:hover {
+    background: var(--accent-purple);
+    color: #FFFFFF;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ==========================================================================
+   ORIGINAL DIARY LAYOUT
+   ========================================================================== */
 .page { 
     width: 148mm; 
     height: 210mm; 
@@ -144,6 +289,272 @@ body {
 @page { size: A5; margin: 0; }
 @media print {
     body { padding: 0; background: white; }
+    .app-header { display: none !important; }
+    #diary-container { padding: 0 !important; }
     .page { width: 148mm; height: 210mm; box-shadow: none; border-radius: 0; margin: 0; }
     .interactive-textarea { background-image: linear-gradient(to bottom, transparent 22px, #c6b7a7 22px, #c6b7a7 23px, transparent 23px); }
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS OVERRIDES (max-width: 600px)
+   ========================================================================== */
+@media (max-width: 600px) {
+    .app-header {
+        padding: 8px 12px;
+    }
+    
+    .logo-text {
+        font-size: 11px;
+        letter-spacing: 0.5px;
+    }
+
+    .sync-indicator {
+        font-size: 9px;
+        padding: 3px 8px;
+    }
+
+    .btn-google {
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+
+    .user-profile {
+        gap: 6px;
+    }
+    
+    .user-display-name {
+        font-size: 10px;
+        max-width: 60px;
+    }
+
+    .btn-logout {
+        padding: 2px 6px;
+        font-size: 8px;
+    }
+
+    body {
+        padding: 0;
+        gap: 0;
+    }
+    
+    #diary-container {
+        padding: 20px 0;
+        gap: 20px;
+    }
+
+    .page {
+        width: 92vw;
+        height: auto;
+        min-height: auto;
+        padding: 15px;
+        box-shadow: 0 6px 20px rgba(160, 140, 120, 0.12);
+        border-radius: 6px;
+    }
+
+    .cover-border-1 {
+        top: 4mm; left: 4mm; right: 4mm; bottom: 4mm;
+        border-width: 1.5px;
+    }
+    .cover-border-2 {
+        top: 5.5mm; left: 5.5mm; right: 5.5mm; bottom: 5.5mm;
+    }
+
+    .cover-content {
+        margin-top: 6mm;
+    }
+
+    .bismillah {
+        font-size: 14px;
+        margin-bottom: 3mm;
+    }
+
+    .main-title {
+        font-size: 20px;
+    }
+
+    .quote {
+        font-size: 9.5px;
+        margin-top: 2px;
+        padding: 0 4mm;
+        text-align: center;
+    }
+
+    .image-frame {
+        margin-top: 5mm;
+        width: 85%;
+        height: auto;
+        aspect-ratio: 100 / 68;
+    }
+
+    .name-box {
+        margin-top: 5mm;
+        width: 85%;
+        padding: 3mm 4mm;
+    }
+
+    .belongs-to {
+        font-size: 9.5px;
+    }
+
+    .interactive-input {
+        font-size: 12px;
+    }
+
+    .branding {
+        bottom: 8mm;
+        font-size: 9.5px;
+    }
+
+    /* Tracker Page */
+    .tracker-border {
+        top: 3mm; left: 3mm; right: 3mm; bottom: 3mm;
+    }
+
+    .tracker-title {
+        margin-top: 4mm;
+        font-size: 14px;
+    }
+
+    .tracker-sub {
+        font-size: 8px;
+        padding: 0 4mm;
+        text-align: center;
+    }
+
+    .table-container {
+        margin-top: 4mm;
+        width: 100%;
+        border-spacing: 0 2px;
+    }
+
+    .table-container th {
+        font-size: 8px;
+        padding: 4px 1px;
+    }
+
+    .th-day {
+        width: 14%;
+    }
+
+    .row-line {
+        height: 7.5mm;
+    }
+
+    .td-day {
+        font-size: 9.5px;
+    }
+
+    .pure-heart-outline {
+        font-size: 18px;
+    }
+
+    .reward-section {
+        position: relative;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        margin-top: 8mm;
+        margin-bottom: 2mm;
+        padding: 8px 10px;
+    }
+
+    .reward-title {
+        font-size: 9px;
+    }
+
+    .reward-input {
+        font-size: 11px;
+    }
+
+    /* Notes Page */
+    .notes-page {
+        height: auto !important;
+        padding: 15px;
+    }
+
+    .notes-header {
+        margin-bottom: 4px;
+    }
+
+    .top-stars {
+        font-size: 8px;
+        letter-spacing: 3px;
+    }
+
+    .notes-title {
+        font-size: 17px;
+    }
+
+    .notes-quote {
+        font-size: 7.5px;
+        margin-bottom: 6px;
+    }
+
+    .meta-inputs {
+        padding: 0;
+        margin-bottom: 4px;
+    }
+
+    .meta-field {
+        font-size: 9.5px;
+    }
+
+    .meta-field input {
+        font-size: 9.5px;
+    }
+
+    .week-input {
+        width: 30px;
+    }
+
+    .month-input {
+        width: 80px;
+    }
+
+    .boxes-wrapper {
+        gap: 8px;
+    }
+
+    .section-box {
+        padding: 6px 10px;
+        height: 120px;
+    }
+
+    .section-box h3 {
+        font-size: 8.5px;
+        margin-bottom: 4px;
+    }
+
+    .interactive-textarea {
+        height: 96px;
+        font-size: 11px;
+        line-height: 18px;
+        background-image: linear-gradient(to bottom, transparent 17px, #c6b7a7 17px, #c6b7a7 18px, transparent 18px);
+        background-size: 100% 18px;
+    }
+
+    /* End Page */
+    .end-bg {
+        padding: 30px 15px;
+    }
+
+    .end-illustration {
+        font-size: 32px;
+        margin-bottom: 3mm;
+    }
+
+    .end-title {
+        font-size: 26px;
+        margin-bottom: 3mm;
+    }
+
+    .end-barakah-studio {
+        font-size: 11px;
+        margin-top: 6mm;
+    }
+
+    .end-sub {
+        font-size: 8px;
+    }
 }
